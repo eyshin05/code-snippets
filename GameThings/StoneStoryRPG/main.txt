@@ -3,7 +3,7 @@
 ///////////////////////
 func ChangeWeapon()
     ?foe!immune_to_ranged
-        equipL vigor wand *5	    
+        equipL vigor wand *6
         ?foe = "ice"
             equipR fire wand *6
         :?foe = "fire"
@@ -12,17 +12,16 @@ func ChangeWeapon()
             equipR posion wand *6
     :
         equip bardiche
-> @ai@
 
-//////////////////////
-// Intial Variables //
-//////////////////////
+////////////////////////
+//  Intial Variables  //
+////////////////////////
 var walking = True
 var status_counter = 0
 
-////////////////
-// Main Logic //
-////////////////
+////////////////////////
+//     Main Logic     //
+////////////////////////
 ?hp < 7 
     activate potion
 
@@ -32,6 +31,11 @@ equipR ouroboros
 
 ?pickup.distance < 10
     equipR star
+
+?loc=Rocky & harvest.distance < 7
+    equip shovel
+?loc=Deadwood & harvest.distance < 7
+    equip hatchet
 
 // fight
 ?foe.distance <= 20
@@ -43,7 +47,7 @@ equipR ouroboros
         :
             status_counter = 0
 	
-        ?status_counter >= 5 	
+        ?status_counter >= 5
             status_counter = 0
             walking = !walking
 	
@@ -54,7 +58,7 @@ equipR ouroboros
                 equip dashing
                 activate L
             :?foe.distance <= 10 &
-            ^item.GetCooldown(bardiche) <= 0 | 
+            ^item.GetCooldown(bardiche) <= 0 |
             ^item.GetCooldown(bardiche) > 870
                 equip bardiche  
                 ?item.right = bardiche & ai.idle
