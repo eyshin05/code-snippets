@@ -1,4 +1,6 @@
-// Initial Functions
+///////////////////////
+// Initial Functions //
+///////////////////////
 func ChangeWeapon()
     ?foe!immune_to_ranged
         equipL vigor wand *5	    
@@ -12,12 +14,15 @@ func ChangeWeapon()
         equip bardiche
 > @ai@
 
-// Intial Variables
+//////////////////////
+// Intial Variables //
+//////////////////////
 var walking = True
 var status_counter = 0
 
-// Main
-
+////////////////
+// Main Logic //
+////////////////
 ?hp < 7 
     activate potion
 
@@ -30,27 +35,27 @@ equipR ouroboros
 
 // fight
 ?foe.distance <= 20
-	ChangeWeapon()
+    ChangeWeapon()
 	
-	?foe = boss
-		?ai.idle
-			status_counter++
-		:
-			status_counter = 0
+    ?foe = boss
+        ?ai.idle
+            status_counter++
+        :
+            status_counter = 0
 	
-		?status_counter >= 5 	
-			status_counter = 0
-			walking = !walking
+        ?status_counter >= 5 	
+            status_counter = 0
+            walking = !walking
 	
-		?walking
-			?foe.distance >= 16
-				equip bardiche
-			:?foe.distance > 10
-				equip dashing
-				activate L
-			:?foe.distance <= 10 &
-			^item.GetCooldown(bardiche) <= 0 | 
-			^item.GetCooldown(bardiche) > 870
-				equip bardiche  
-				?item.right = bardiche & ai.idle
-					activate R
+        ?walking
+            ?foe.distance >= 16
+                equip bardiche
+            :?foe.distance > 10
+                equip dashing
+                activate L
+            :?foe.distance <= 10 &
+            ^item.GetCooldown(bardiche) <= 0 | 
+            ^item.GetCooldown(bardiche) > 870
+                equip bardiche  
+                ?item.right = bardiche & ai.idle
+                    activate R
