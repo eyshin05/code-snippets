@@ -1,0 +1,56 @@
+// Initial Functions
+func ChangeWeapon()
+    ?foe!immune_to_ranged
+        equipL vigor wand *5	    
+        ?foe = "ice"
+            equipR fire wand *6
+        :?foe = "fire"
+            equipR aether wand *6
+        :
+            equipR posion wand *6
+    :
+        equip bardiche
+> @ai@
+
+// Intial Variables
+var walking = True
+var status_counter = 0
+
+// Main
+
+?hp < 7 
+    activate potion
+
+// default hands
+equipL triskelion
+equipR ouroboros
+
+?pickup.distance < 10
+    equipR star
+
+// fight
+?foe.distance <= 20
+	ChangeWeapon()
+	
+	?foe = boss
+		?ai.idle
+			status_counter++
+		:
+			status_counter = 0
+	
+		?status_counter >= 5 	
+			status_counter = 0
+			walking = !walking
+	
+		?walking
+			?foe.distance >= 16
+				equip bardiche
+			:?foe.distance > 10
+				equip dashing
+				activate L
+			:?foe.distance <= 10 &
+			^item.GetCooldown(bardiche) <= 0 | 
+			^item.GetCooldown(bardiche) > 870
+				equip bardiche  
+				?item.right = bardiche & ai.idle
+					activate R
