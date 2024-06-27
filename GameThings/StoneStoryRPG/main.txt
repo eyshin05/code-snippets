@@ -2,7 +2,10 @@
 // Initial Functions //
 ///////////////////////
 func ChangeWeapon()
-    ?foe!immune_to_ranged
+    ?foe.armor > 10 & foe ! immune_to_physical
+        equipL vigor wand *6
+        equipR hammer *7
+    ?foe ! immune_to_ranged
         equipL vigor wand *6
         ?foe = "ice"
             equipR fire wand *6
@@ -18,6 +21,13 @@ func ChangeWeapon()
 ////////////////////////
 var walking = True
 var status_counter = 0
+
+////////////////////////
+//    Visualization   //
+////////////////////////
+
+>`0,1,@foe@
+>`0,2,@ai@
 
 ////////////////////////
 //     Main Logic     //
@@ -55,7 +65,7 @@ equipR ouroboros
             ?foe.distance >= 16
                 equip bardiche
             :?foe.distance > 10
-                equip dashing
+                equip bashing
                 activate L
             :?foe.distance <= 10 &
             ^item.GetCooldown(bardiche) <= 0 |
