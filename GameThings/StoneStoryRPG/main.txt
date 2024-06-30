@@ -1,15 +1,15 @@
+import Cosmetics/PetBoo
+import Fishing
+
 ///////////////////////
 // Initial Functions //
 ///////////////////////
 func ChangeWeapon()
-    ?foe.armor > 10 & foe ! immune_to_physical
+    ?foe = immune_to_physical
         equipL vigor wand *6
-        equipR hammer *7
-    ?foe ! immune_to_ranged
-        equipL vigor wand *6
-        ?foe = "ice"
+        ?foe = ＂ice＂
             equipR fire wand *6
-        :?foe = "fire"
+        :?foe = ＂fire＂
             equipR aether wand *6
         :
             equipR posion wand *6
@@ -25,9 +25,7 @@ var status_counter = 0
 ////////////////////////
 //    Visualization   //
 ////////////////////////
-
 >`0,1,@foe@
->`0,2,@ai@
 
 ////////////////////////
 //     Main Logic     //
@@ -44,23 +42,23 @@ equipR ouroboros
 
 ?loc=Rocky & harvest.distance < 7
     equip shovel
-?loc=Deadwood & harvest.distance < 7
-    equip hatchet
+//?loc=Deadwood & harvest.distance < 7
+//    equip hatchet
 
 // fight
 ?foe.distance <= 20
     ChangeWeapon()
-	
+  
     ?foe = boss
         ?ai.idle
             status_counter++
         :
             status_counter = 0
-	
+  
         ?status_counter >= 5
             status_counter = 0
             walking = !walking
-	
+  
         ?walking
             ?foe.distance >= 16
                 equip bardiche
