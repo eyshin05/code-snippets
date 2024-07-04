@@ -1,4 +1,4 @@
-import Cosmetics/PetBoo
+import Cosmetics/PetCrab
 import Fishing
 
 ///////////////////////
@@ -6,15 +6,25 @@ import Fishing
 ///////////////////////
 func ChangeWeapon()
     ?foe = immune_to_physical
-        equipL vigor wand *6
-        ?foe = ＂ice＂
-            equipR fire wand *6
-        :?foe = ＂fire＂
-            equipR aether wand *6
+        equipL vigor wand 
+        ?foe = "ice"
+            equipR fire wand dF
+        :?foe = "fire"
+            equipR aether wand dU
         :
-            equipR posion wand *6
+            equipR poison wand D
     :
         equip bardiche
+
+func Steal()
+    ?item.GetCooldown("skeleton_arm") <= 0 & 
+    ^foe.hp <= 20 & foe ! immune_to_physical & 
+    ^foe.armor <= 0 & foe ! boss
+        equip skeleton arm
+        ?item.CanActivate("skeleton_arm")
+            activate R
+   :
+       loadout 1
 
 ////////////////////////
 //  Intial Variables  //
@@ -25,12 +35,12 @@ var status_counter = 0
 ////////////////////////
 //    Visualization   //
 ////////////////////////
->`0,1,@foe@
+>`0,1,@item.GetCooldown("skeleton_arm")@
 
 ////////////////////////
 //     Main Logic     //
 ////////////////////////
-?hp < 7 
+?hp < 7
     activate potion
 
 // default hands
@@ -40,34 +50,26 @@ equipR ouroboros
 ?pickup.distance < 10
     equipR star
 
-?loc=Rocky & harvest.distance < 7
-    equip shovel
+//?loc=Rocky & harvest.distance < 7
+//    equip shovel
 //?loc=Deadwood & harvest.distance < 7
 //    equip hatchet
 
 // fight
-?foe.distance <= 20
-    ChangeWeapon()
-  
+?foe.distance < 20
+    Steal()
+
     ?foe = boss
-        ?ai.idle
-            status_counter++
-        :
-            status_counter = 0
-  
-        ?status_counter >= 5
-            status_counter = 0
-            walking = !walking
-  
-        ?walking
-            ?foe.distance >= 16
-                equip bardiche
-            :?foe.distance > 10
-                equip bashing
-                activate L
-            :?foe.distance <= 10 &
-            ^item.GetCooldown(bardiche) <= 0 |
-            ^item.GetCooldown(bardiche) > 870
-                equip bardiche  
-                ?item.right = bardiche & ai.idle
-                    activate R
+        ChangeWeapon()
+
+        ?foe.distance >= 16
+            equip bardiche
+        :?foe.distance > 10
+            equip bashing
+            activate L
+        :?foe.distance <= 10 &
+        ^item.GetCooldown(bardiche) <= 0 |
+        ^item.GetCooldown(bardiche) > 870
+            equip bardiche  
+            ?item.right = bardiche & ai.idle
+                activate R
