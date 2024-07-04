@@ -1,3 +1,5 @@
+// Deadwood 24sec 16f
+
 import Cosmetics/PetCrab
 import Fishing
 
@@ -35,7 +37,7 @@ var status_counter = 0
 ////////////////////////
 //    Visualization   //
 ////////////////////////
->`0,1,@item.GetCooldown("skeleton_arm")@
+>`0,1,@item.CanActivate("bashing")@
 
 ////////////////////////
 //     Main Logic     //
@@ -57,19 +59,19 @@ equipR ouroboros
 
 // fight
 ?foe.distance < 20
-    Steal()
-
-    ?foe = boss
-        ChangeWeapon()
-
-        ?foe.distance >= 16
-            equip bardiche
-        :?foe.distance > 10
-            equip bashing
+    ChangeWeapon()
+    ?foe.distance > 10
+        equip bashing
+        ?item.CanActivate("bashing")
             activate L
-        :?foe.distance <= 10 &
-        ^item.GetCooldown(bardiche) <= 0 |
-        ^item.GetCooldown(bardiche) > 870
-            equip bardiche  
-            ?item.right = bardiche & ai.idle
-                activate R
+        :
+            equip dashing
+            
+            ?item.CanActivate("dashing")
+                activate L
+    :?foe = boss&
+    ^item.GetCooldown(bardiche) <= 0 |
+    ^item.GetCooldown(bardiche) > 870
+        equip bardiche  
+        ?item.right = bardiche & ai.idle
+            activate R
