@@ -7,7 +7,8 @@ import Fishing
 // Initial Functions //
 ///////////////////////
 func ChangeWeapon()
-    ?foe = immune_to_physical
+    ?foe = immune_to_physical |
+    ^force_range = True
         equipL vigor wand 
         ?foe = "ice"
             equipR fire wand dF
@@ -17,6 +18,16 @@ func ChangeWeapon()
             equipR poison wand D
     :
         equip bardiche
+
+func SpecialCases()
+    ?loc = Boiling & foe = boss
+        ?foe.state = 1 | foe.state = 2
+            force_range = True
+        :?foe.state = 33
+            force_range = False
+    ?loc = Temple & foe = boss
+        ?foe.state = 112 & time - event_time_start >= 45
+            dodge = True
 
 func Steal()
     ?item.GetCooldown("skeleton_arm") <= 0 & 
@@ -33,17 +44,26 @@ func Steal()
 ////////////////////////
 var walking = True
 var status_counter = 0
+var force_range = False
+var dodge = False
+var before_state = -1
+var event_time_start = 0
+dodge = False
 
 ////////////////////////
 //    Visualization   //
 ////////////////////////
->`0,1,@item.CanActivate("bashing")@
+>`0,1,@foe.state@ @time - event_time_start@
 
 ////////////////////////
 //     Main Logic     //
 ////////////////////////
-?hp < 7
-    activate potion
+//?hp < 7
+//    activate potion
+
+?before_state ! foe.state
+    event_time_start = time
+    before_state = foe.state
 
 // default hands
 equipL triskelion
@@ -58,20 +78,34 @@ equipR ouroboros
 //    equip hatchet
 
 // fight
-?foe.distance < 20
+?foe.distance <= 20
+    SpecialCases() 
     ChangeWeapon()
-    ?foe.distance > 10
-        equip bashing
-        ?item.CanActivate("bashing")
-            activate L
+
+    ?foe.distance < 17 & foe.distance > 10
+        ?foe = boss
+            ?item.GetCooldown(bashing) <= 0
+                equip bashing
+                activate L
         :
             equip dashing
-            
-            ?item.CanActivate("dashing")
-                activate L
-    :?foe = boss&
+            activate L
+    :?foe = boss &
+    ^foe.distance < 10 &
+    ^force_range ! True &
     ^item.GetCooldown(bardiche) <= 0 |
     ^item.GetCooldown(bardiche) > 870
         equip bardiche  
         ?item.right = bardiche & ai.idle
+            activate portion
             activate R
+
+    //? dodge = True & 
+    //^item.GetCooldown("mind") <= 0
+    //    equipL mind
+
+?item.right.state = 3
+  equipR moon
+:?item.left.state = 3
+  equipL moon
+
