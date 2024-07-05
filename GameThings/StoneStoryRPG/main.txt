@@ -1,6 +1,4 @@
-// Deadwood 24sec 16f
-
-import Cosmetics/PetCrab
+import Cosmetics/PetDog
 import Fishing
 
 ///////////////////////
