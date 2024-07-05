@@ -8,9 +8,9 @@ func ChangeWeapon()
     ?foe = immune_to_physical |
     ^force_range = True
         equipL vigor wand 
-        ?foe = "ice"
+        ?foe = ＂ice＂
             equipR fire wand dF
-        :?foe = "fire"
+        :?foe = ＂fire＂
             equipR aether wand dU
         :
             equipR poison wand D
@@ -28,11 +28,11 @@ func SpecialCases()
             dodge = True
 
 func Steal()
-    ?item.GetCooldown("skeleton_arm") <= 0 & 
+    ?item.GetCooldown(＂skeleton_arm＂) <= 0 & 
     ^foe.hp <= 20 & foe ! immune_to_physical & 
     ^foe.armor <= 0 & foe ! boss
         equip skeleton arm
-        ?item.CanActivate("skeleton_arm")
+        ?item.CanActivate(＂skeleton_arm＂)
             activate R
    :
        loadout 1
@@ -56,8 +56,8 @@ dodge = False
 ////////////////////////
 //     Main Logic     //
 ////////////////////////
-//?hp < 7
-//    activate potion
+?hp < 7
+    activate potion
 
 ?before_state ! foe.state
     event_time_start = time
@@ -85,9 +85,12 @@ equipR ouroboros
             ?item.GetCooldown(bashing) <= 0
                 equip bashing
                 activate L
-        :
-            equip dashing
-            activate L
+            :
+                equip dashing *7
+                activate L
+        //:
+        //    equip dashing *7
+        //    activate L
     :?foe = boss &
     ^foe.distance < 10 &
     ^force_range ! True &
@@ -95,15 +98,14 @@ equipR ouroboros
     ^item.GetCooldown(bardiche) > 870
         equip bardiche  
         ?item.right = bardiche & ai.idle
-            activate portion
             activate R
 
     //? dodge = True & 
-    //^item.GetCooldown("mind") <= 0
+    //^item.GetCooldown(＂mind＂) <= 0
     //    equipL mind
 
 ?item.right.state = 3
-  equipR moon
+    equipR moon
 :?item.left.state = 3
-  equipL moon
+    equipL moon
 
