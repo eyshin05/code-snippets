@@ -4,17 +4,17 @@ import Fishing
 // Initial Functions //
 ///////////////////////
 func ChangeWeapon()
-    ?foe = immune_to_physical |
-    ^force_range = True
+    ?foe ! immune_to_range &
+    ^force_physical = False
         equipL vigor wand dL 
         ?foe = aether
             equipR vigor wand D
         :?foe = ice
             equipR fire wand dF
         :?foe = fire
-            equipR aether wand dU
+            equipR aether wand D
         :?foe = poison
-            equipR ice wand dI
+            equipR ice wand D
         :
             equipR poison wand D
     :
@@ -23,9 +23,9 @@ func ChangeWeapon()
 func SpecialCases()
     ?loc = Boiling & foe = boss
         ?foe.state = 1 | foe.state = 2
-            force_range = True
+            force_physical = False
         :?foe.state = 33
-            force_range = False
+            force_physical = True
     ?loc = Temple & foe = boss
         ?foe.state = 112 & time - event_time_start >= 45
             dodge = True
@@ -56,11 +56,12 @@ func Debuff()
 ////////////////////////
 var walking = True
 var status_counter = 0
-var force_range = False
+var force_physical = False
 var dodge = False
 var before_state = -1
 var event_time_start = 0
 dodge = False
+force_physical = False
 
 ////////////////////////
 //    Visualization   //
@@ -90,12 +91,14 @@ equipR ouroboros
 //    equip hatchet
 
 // fight
-?foe.distance <= 20
+?foe.distance <= 22 
+^foe.distance >= 0
     SpecialCases() 
     ChangeWeapon()
 
     ?foe = boss
-        Debuff()
+        ?foe.armor = 0
+            Debuff()
         ?foe.distance < 17 & foe.distance > 10
             ?item.GetCooldown(bashing) <= 0
                 equip bashing
