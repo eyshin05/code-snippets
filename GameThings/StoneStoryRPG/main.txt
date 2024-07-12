@@ -1,4 +1,3 @@
-import Cosmetics/PetDog
 import Fishing
 
 ///////////////////////
@@ -7,11 +6,15 @@ import Fishing
 func ChangeWeapon()
     ?foe = immune_to_physical |
     ^force_range = True
-        equipL vigor wand 
-        ?foe = ＂ice＂
+        equipL vigor wand dL 
+        ?foe = aether
+            equipR vigor wand D
+        :?foe = ice
             equipR fire wand dF
-        :?foe = ＂fire＂
+        :?foe = fire
             equipR aether wand dU
+        :?foe = poison
+            equipR ice wand dI
         :
             equipR poison wand D
     :
@@ -36,6 +39,17 @@ func Steal()
             activate R
    :
        loadout 1
+
+func Debuff()
+  ?foe.debuffs.string!∞
+    equipR curtist mask
+    equipL poison wand dP
+  ?foe.debuffs.string!φ
+    equipR curtist mask
+    equipR fire wand dF
+  ?foe.debuffs.string!＂chill:6＂
+    equipR curtist mask
+    equipL ice wand dI
 
 ////////////////////////
 //  Intial Variables  //
@@ -80,32 +94,26 @@ equipR ouroboros
     SpecialCases() 
     ChangeWeapon()
 
-    ?foe.distance < 17 & foe.distance > 10
-        ?foe = boss
+    ?foe = boss
+        Debuff()
+        ?foe.distance < 17 & foe.distance > 10
             ?item.GetCooldown(bashing) <= 0
                 equip bashing
                 activate L
             :
                 equip dashing *7
                 activate L
-        //:
-        //    equip dashing *7
-        //    activate L
-    :?foe = boss &
-    ^foe.distance < 10 &
-    ^force_range ! True &
-    ^item.GetCooldown(bardiche) <= 0 |
-    ^item.GetCooldown(bardiche) > 870
-        equip bardiche  
-        ?item.right = bardiche & ai.idle
-            activate R
 
-    //? dodge = True & 
-    //^item.GetCooldown(＂mind＂) <= 0
-    //    equipL mind
+        :?foe.distance < 10 &
+        ^force_range ! True &
+        ^item.GetCooldown(bardiche) <= 0 |
+        ^item.GetCooldown(bardiche) > 870
+            equip bardiche
+            ?item.right = bardiche & ai.idle
+                activate R
 
 ?item.right.state = 3
-    equipR moon
+    equipR moondial
 :?item.left.state = 3
-    equipL moon
+    equipL moondial
 
