@@ -37,8 +37,6 @@ func Steal()
         equip skeleton arm
         ?item.CanActivate(＂skeleton_arm＂)
             activate R
-   :
-       loadout 1
 
 func Debuff()
   ?foe.debuffs.string!∞
@@ -66,7 +64,7 @@ force_physical = False
 ////////////////////////
 //    Visualization   //
 ////////////////////////
->`0,1,@foe.state@ @time - event_time_start@
+>`0,1,@foe@
 
 ////////////////////////
 //     Main Logic     //
@@ -91,8 +89,7 @@ equipR ouroboros
 //    equip hatchet
 
 // fight
-?foe.distance <= 22 
-^foe.distance >= 0
+?foe.distance <= 22 & foe.distance >= 0
     SpecialCases() 
     ChangeWeapon()
 
@@ -116,7 +113,7 @@ equipR ouroboros
                 activate R
 
 ?item.right.state = 3
-    equipR moondial
+    equipR moon
 :?item.left.state = 3
-    equipL moondial
+    equipL moon
 
